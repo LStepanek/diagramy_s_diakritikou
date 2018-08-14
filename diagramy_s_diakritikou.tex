@@ -1,0 +1,418 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% minimal working example pro diagram s diakritikou a matematickou notací
+%% v popiscích
+
+%% typeset by TeX by Lubomir Stepanek
+
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage{amsmath, amsfonts, mathtools}
+%\usepackage{graphicx}
+%\usepackage{eso-pic}
+%\usepackage[czech]{babel}
+%\usepackage{epstopdf}    % důležité pro zrenderování .eps ve Windows !!!
+%\usepackage{float}
+%\usepackage[bottom]{footmisc}
+%\usepackage[margin = 2.5cm]{geometry}
+
+%% ----------------------------------------------------------------------------
+
+\title{%
+  Tvorba diagramů\\
+  s českými popisky\\
+  a\\
+  matematickou notací\\
+  v prostředí \textsf{R}
+}
+\author{Lubomír Štěpánek}
+\date{\textit{14. srpna 2018}}
+
+
+%% ----------------------------------------------------------------------------
+
+%% vkládám své vlastní styly, knihovny, některé globální parametry ------------
+\input{my_styles.tex}
+
+
+%% ----------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle         % nadpis
+
+\tableofcontents   % obsah
+
+\AddToShipoutPictureBG*{%
+  \AtPageLowerLeft{%
+    \hspace{\paperwidth}%
+    \raisebox{\baselineskip}{%
+      \makebox[0pt][r]{
+        {\footnotesize Vysázeno pomocí \textsf{R}-ka a \TeX-u\quad}
+      }
+}}}
+
+
+\section{Ukázkový příklad}
+
+Uvažujme dvě nebiasované laplaceovské kostky vždy o počtu ok 1 až 6,
+kterými současně hodíme. Hledejme pravděpodobnost, že součet ok na obou
+kostkách bude roven číslu $x \in \mathbb{R}$.
+
+Součet ok, která padnou na obou kostkách, vnímejme jako náhodnou veličinu
+a označme ji $X$. Hledáme tedy $P(X = x)$. Po troše uvažování a základní
+aritmetiky můžeme odvodit,
+že pravděpodobnostní funkce náhodné veličiny $X$ je $P_{X}(x) = P(X = x)$
+rovna
+
+\begin{equation*}
+  P_{X}(x) = P(X = x) = \left\{
+  \begin{array}{ll}
+  \frac{6 - \lvert x - 7 \rvert}{36}, & x \in \{2, 3, \ldots, 12\} \\
+  \phantom{iiiiiiii}0, & \text{jinak}.
+  \end{array} \right.
+\end{equation*}
+
+Na obrázku~\ref{pravdepodobnost_souctu_x} je pak grafická prezentace
+pravděpodobnostní funkce $P_{X}(x)$ pro rozumné hodnoty $x$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 1.0\hsize]{%
+    pravdepodobnost_souctu_x.eps%
+  }
+  \caption{%
+    Pravděpodobnosti $P(\textrm{součet ok obou kostek} = x)$ pro
+    jednotlivé hodnoty $x$, kterých může součet
+    ok dvou hozených kostek nabýt.
+    \label{pravdepodobnost_souctu_x}%
+  }
+\end{figure}
+
+Na obrázku~\ref{pravdepodobnost_souctu_x_formalneji} pak tatáž
+pravděpodobnostní funkce $P_{X}(x)$ pro rozumné hodnoty $x$, avšak
+s formálnějším popiskem svislé osy.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 1.0\hsize]{%
+    pravdepodobnost_souctu_x_formalneji.eps%
+  }
+  \caption{%
+    Pravděpodobnostní funkce $P_{X}(x) = P(X = x)$, kde
+    \mbox{$x \in \{1, 2, 3, \ldots, 12 \}$}, pro náhodnou veličinu
+    $X$ odpovídající součtu ok dvou hozených laplaceovských kostek.
+    \label{pravdepodobnost_souctu_x_formalneji}%
+  }
+\end{figure}
+
+Do třetice a pro cvičné účely je stejný diagram i na
+obrázku~\ref{pravdepodobnost_souctu_x_neformalne}, kde je v~popiscích
+os zcela upuštěno od matematické notace\footnote{Všechny tři
+diagramy byly vytvořeny pouze s využitím jazyka a prostředí \textsf{R}.}.
+Popisky však obsahují bohatou českou diakritiku.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 1.0\hsize]{%
+    pravdepodobnost_souctu_x_neformalne.eps%
+  }
+  \caption{%
+    Pravděpodobnosti jednotlivých hodnot, kterých může součet
+    ok obou hozených kostek nabýt.
+    \label{pravdepodobnost_souctu_x_neformalne}%
+  }
+\end{figure}
+
+\section{Kód pro vytvoření všech tří diagramů v \textsf{R}}
+
+Nakonec se ještě podívejme, jaký kód v prostředí \textsf{R} takové diagramy
+vytvoří.
+
+\begin{lstlisting}[style = custom_R]
+# ----------------------------------------------------------------------------------------------------------------------
+
+#\# tabulka s pravděpodobnostmi, že při hodu dvěma
+#\# laplaceovými kostkami bude součet ok obou
+#\# kostek roven číslu $x$
+
+my_table <- list(
+    "x" = as.numeric(1:12),
+    "pravdepodobnost_x" = unlist(
+        lapply(
+            1:12,
+            function(x){
+                sum(outer(1:6, 1:6, "+") == x) / 36
+            }
+        )
+    )
+)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+#\# diagram součet $x$ vs. pravděpodobnost, že obě hozené kostky
+#\# mají součet ok roven číslu $x$
+
+cairo_ps(
+    file = "pravdepodobnost_souctu_x.eps",
+    width = 8,
+    height = 5.4,
+    pointsize = 16,
+    family = "serif"     # patkový font kvůli matematické notaci
+)
+
+par(mar = c(4.1, 4.1, 0.1, 0.1))
+
+plot(
+    x = my_table[["x"]],
+    y = my_table[["pravdepodobnost_x"]],
+    xlab = expression(italic(x)),
+    ylab = "",
+    xaxt = "n",    # zakazuji vykreslení vodorovné osy
+    yaxt = "n",    # zakazuji vykreslení svislé osy
+    pch = 19
+)
+
+# všimněme si, že má-li popisek osy obsahovat současně písmeno
+# (či písmena) s diakritikou (ě ve slově pravděpodobnost)
+# a matematickou notaci ($P(\textrm{součet ok obou kostek} = x)$),
+# není možné použít obvyklý xlab či ylab, ale popisek se musí
+# sestavit pomocí funkce pro text kopírující osu diagramu mtext();
+# ani engine cairo\_pdf() či cairo\_ps() oboje najednou neumí
+
+mtext(
+    text = "pravděpodobnost     (součet ok obou kostek =   )",
+    side = 2,
+    line = 3
+)   # počet mezer jsem prostě jen odhadl metodou error-trial,
+    # celkem "fishy", není to moc elegantní a zabere to čas,
+    # ale dle mě a mnohých fór asi jediné řešení pro
+    # češtinu \& matematiku současně v diagramech v R
+
+mtext(
+    text = expression(italic(P)),
+    side = 2,      # side = 2 pro svislou osu
+    line = 3,      # vzdálenost od canvasu diagramu
+                   # v jednotkách vodorovné osy
+    at = 0.0655    # opět, pozici dle jednotky svislé
+                   # osy odhaduji od oka
+)
+
+mtext(
+    text = expression(italic(x)),
+    side = 2,
+    line = 3,
+    at = 0.168     # same story here
+)
+
+axis(
+    side = 1,
+    at = 1:12,
+    labels = as.character(1:12)
+)
+
+axis(
+    side = 2,
+    at = seq(0, 0.15, 0.05),
+    labels = gsub(
+        "\\.",
+        ",",
+        format(
+            round(
+                seq(0, 0.15, 0.05),
+                digits = 2
+            ),
+            nsmall = 2
+        )
+    )   # nahrazuju desetinnou tečku za čárku, must-do v česky
+        # mluvících diagramech
+)
+
+dev.off()
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+#\# stejný diagram, ale pro cvičné účely tentokrát v popiscích
+#\# použijeme jen matematickou notaci, tvorba popisku se tím
+#\# zjednoduší
+
+cairo_ps(
+    file = "pravdepodobnost_souctu_x_formalneji.eps",
+    width = 8,
+    height = 5.4,
+    pointsize = 16,
+    family = "serif"     # patkový font kvůli matematické notaci
+)
+
+par(mar = c(4.1, 4.1, 0.1, 0.1))
+
+plot(
+    x = my_table[["x"]],
+    y = my_table[["pravdepodobnost_x"]],
+    xlab = expression(italic(x)),
+    ylab = expression(
+        paste(
+            italic(P)[italic(X)],
+            "(",
+            italic(x),
+            ") = ",
+            italic(P),
+            "(",
+            italic(X),
+            " = ",
+            italic(x),
+            ")",
+            sep = ""
+        )
+    ),
+    xaxt = "n",    # zakazuji vykreslení vodorovné osy
+    yaxt = "n",    # zakazuji vykreslení svislé osy
+    pch = 19
+)
+
+axis(
+    side = 1,
+    at = 1:12,
+    labels = as.character(1:12)
+)
+
+axis(
+    side = 2,
+    at = seq(0, 0.15, 0.05),
+    labels = gsub(
+        "\\.",
+        ",",
+        format(
+            round(
+                seq(0, 0.15, 0.05),
+                digits = 2
+            ),
+            nsmall = 2
+        )
+    )   # nahrazuju desetinnou tečku za čárku, must-do v česky
+        # mluvících diagramech
+)
+
+dev.off()
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+#\# do třetice stejný diagram, ale bez matematické notace
+#\# v popiscích
+
+cairo_ps(
+    file = "pravdepodobnost_souctu_x_neformalne.eps",
+    width = 8,
+    height = 5.4,
+    pointsize = 16,
+    family = "serif"     # patkový font kvůli matematické notaci
+)
+
+par(mar = c(4.1, 4.1, 0.1, 0.1))
+
+plot(
+    x = my_table[["x"]],
+    y = my_table[["pravdepodobnost_x"]],
+    xlab = "možná hodnota součtu ok obou kostek",
+    ylab = "pravděpodobnost dané hodnoty součtu ok kostek",
+    xaxt = "n",    # zakazuji vykreslení vodorovné osy
+    yaxt = "n",    # zakazuji vykreslení svislé osy
+    pch = 19
+)
+
+axis(
+    side = 1,
+    at = 1:12,
+    labels = as.character(1:12)
+)
+
+axis(
+    side = 2,
+    at = seq(0, 0.15, 0.05),
+    labels = gsub(
+        "\\.",
+        ",",
+        format(
+            round(
+                seq(0, 0.15, 0.05),
+                digits = 2
+            ),
+            nsmall = 2
+        )
+    )   # nahrazuju desetinnou tečku za čárku, must-do v česky
+        # mluvících diagramech
+)
+
+dev.off()
+
+# ----------------------------------------------------------------------------------------------------------------------
+\end{lstlisting}
+
+\section{Závěr}
+
+Základním ideou tvorby diagramů s českými popisky je použití
+enkapsulovaného postscriptu (\texttt{.eps}) a (nejen) \textsf{R}-kového
+enginu \texttt{cairo}, který narozdíl od běžných základních enginů
+(\texttt{pdf}, \ldots)
+pro sázení vektorových obrázků používá znakovou sadu extended ASCII,
+tedy minimálně 512 znaků, což pokryje i česká písmena s~diakritikou.
+V \textsf{R} jde o funkci \texttt{cairo\_ps()}, která spustí vývojářský
+mód, vytvoří podle kódu diagram, zrenderuje ho a nakonec uloží ve formátu
+enkapsulovaného postscriptu (přípona \texttt{.eps}).
+Obdobná funkce \texttt{cairo\_pdf()} vrátí koncový formát \texttt{.pdf}.
+Obě funkce jsou součástí balíčku \texttt{grDevices}, který se inicializuje
+automaticky po spuštění \textsf{R}, takže není nutné nic navíc instalovat.
+Obdobné funkce a~možná trochu lepší uživatelské možnosti nabízí \textsf{R}-kový
+balíček
+\texttt{Cairo}, nicméně pro uvedené tři diagramy postačila jen základní
+funkce \texttt{cairo\_ps()}.
+
+Přestože není dobrou praxí vkládat do \TeX-ového dokumentu obrázky
+jako \texttt{.pdf}, reálně by mělo vše fungovat i se zachováním
+české diakritiky. Formát postscriptu je preferován proto, že jde ve skutečnosti
+o vlastní jazyk (takže obrázek s příponou \texttt{.eps} nelze otevřít
+v běžném editoru obrázků, ale naopak lze otevřít v textovém editoru).
+Při znalosti kódu postscriptu (je podobný jazyku PROLOG)
+lze dokonce tímto způsobem dělat postprocessingové
+úpravy obrázků pouhou úpravou jeho kódu (bez nutnosti obrázek znovu
+generovat).
+
+Kombinování českých písmen s diakritikou a matematické notace v jednom
+popisku je svízelné, ale možné. Jedním z řešení\footnote{Osobně žádné jiné
+bohužel neznám a po dlouhém (řádově dny v roce 2017) pátrání po všemožných Q\&A fórech
+ani nic nenasvědčuje, že by jiné existovalo.} je
+tvorba takového popisku "ve dvou vrstvách", postupně, tedy nejdříve vytvoření
+textového podkladu -- ten může obsahovat diakritiku, a poté až umístění
+matematické notace obalené \mbox{v~\textsf{R}-kové} funkci \texttt{expression()}.
+Obě "vrstvy" popisku lze vytvořit pomocí \textsf{R}-kové funkce
+\texttt{mtext()}. Naopak známé grafické argumenty \texttt{xlab}, \texttt{ylab}
+samy o~sobě v~tomto duchu fungovat nebudou (engine \texttt{cairo} pravděpodobně
+neumí zpracovat
+výstup jednoho generického grafického příkazu v \textsf{R} tak, aby zrenderoval
+současně diakritiku i~matematickou notaci, a v ten okamžik přestane kód diagramu
+dále renderovat, aniž by vrátil chybovou hlášku -- výsledkem je tak "diagram"
+s chybějícími komponentami). Příkladem kombinace matematické notace a diakritiky
+v jednom popisku je obrázek~\ref{pravdepodobnost_souctu_x}.
+
+
+
+
+\end{document}
+
+
+%% ----------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+

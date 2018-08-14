@@ -1,0 +1,9 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {czech}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}Uk\IeC {\'a}zkov\IeC {\'y} p\IeC {\v r}\IeC {\'\i }klad}{1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}K\IeC {\'o}d pro vytvo\IeC {\v r}en\IeC {\'\i } v\IeC {\v s}ech t\IeC {\v r}\IeC {\'\i } diagram\IeC {\r u} v \textsf {R}}{4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Z\IeC {\'a}v\IeC {\v e}r}{9}
