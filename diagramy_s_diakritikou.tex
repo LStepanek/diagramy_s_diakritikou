@@ -368,39 +368,37 @@ enkapsulovaného postscriptu (přípona \texttt{.eps}).
 Obdobná funkce \texttt{cairo\_pdf()} vrátí koncový formát \texttt{.pdf}.
 Obě funkce jsou součástí balíčku \texttt{grDevices}, který se inicializuje
 automaticky po spuštění \textsf{R}, takže není nutné nic navíc instalovat.
-Obdobné funkce a~možná trochu lepší uživatelské možnosti nabízí \textsf{R}-kový
-balíček
-\texttt{Cairo}, nicméně pro uvedené tři diagramy postačila jen základní
-funkce \texttt{cairo\_ps()}.
+Obdobné funkce a~možná trochu lepší uživatelské možnosti nabízí
+\textsf{R}-kový balíček \texttt{Cairo}, nicméně pro uvedené tři diagramy
+postačila jen základní funkce \texttt{cairo\_ps()}.
 
 Přestože není dobrou praxí vkládat do \TeX-ového dokumentu obrázky
 jako \texttt{.pdf}, reálně by mělo vše fungovat i se zachováním
-české diakritiky. Formát postscriptu je preferován proto, že jde ve skutečnosti
-o vlastní jazyk (takže obrázek s příponou \texttt{.eps} nelze otevřít
-v běžném editoru obrázků, ale naopak lze otevřít v textovém editoru).
-Při znalosti kódu postscriptu (je podobný jazyku PROLOG)
-lze dokonce tímto způsobem dělat postprocessingové
+české diakritiky. Formát postscriptu je preferován proto, že jde
+ve skutečnosti o vlastní jazyk (takže obrázek s příponou \texttt{.eps}
+nelze otevřít v běžném editoru obrázků, ale naopak lze otevřít
+v textovém editoru). Při znalosti kódu postscriptu (je podobný jazyku
+PROLOG) lze dokonce tímto způsobem dělat postprocessingové
 úpravy obrázků pouhou úpravou jeho kódu (bez nutnosti obrázek znovu
 generovat).
 
 Kombinování českých písmen s diakritikou a matematické notace v jednom
 popisku je svízelné, ale možné. Jedním z řešení\footnote{Osobně žádné jiné
-bohužel neznám a po dlouhém (řádově dny v roce 2017) pátrání po všemožných Q\&A fórech
-ani nic nenasvědčuje, že by jiné existovalo.} je
-tvorba takového popisku "ve dvou vrstvách", postupně, tedy nejdříve vytvoření
-textového podkladu -- ten může obsahovat diakritiku, a poté až umístění
-matematické notace obalené \mbox{v~\textsf{R}-kové} funkci \texttt{expression()}.
-Obě "vrstvy" popisku lze vytvořit pomocí \textsf{R}-kové funkce
-\texttt{mtext()}. Naopak známé grafické argumenty \texttt{xlab}, \texttt{ylab}
-samy o~sobě v~tomto duchu fungovat nebudou (engine \texttt{cairo} pravděpodobně
-neumí zpracovat
-výstup jednoho generického grafického příkazu v \textsf{R} tak, aby zrenderoval
-současně diakritiku i~matematickou notaci, a v ten okamžik přestane kód diagramu
-dále renderovat, aniž by vrátil chybovou hlášku -- výsledkem je tak "diagram"
-s chybějícími komponentami). Příkladem kombinace matematické notace a diakritiky
-v jednom popisku je obrázek~\ref{pravdepodobnost_souctu_x}.
-
-
+bohužel neznám a po dlouhém (řádově dny v roce 2017) pátrání po všemožných
+Q\&A fórech ani nic nenasvědčuje, že by jiné existovalo.} je
+tvorba takového popisku "ve dvou vrstvách", postupně, tedy nejdříve
+vytvoření textového podkladu -- ten může obsahovat diakritiku,
+a poté až umístění matematické notace obalené \mbox{v~\textsf{R}-kové}
+funkci \texttt{expression()}. Obě "vrstvy" popisku lze vytvořit pomocí
+\textsf{R}-kové funkce \texttt{mtext()}. Naopak známé grafické argumenty
+\texttt{xlab}, \texttt{ylab} samy o~sobě v~tomto duchu fungovat nebudou
+(engine \texttt{cairo} pravděpodobně neumí zpracovat výstup jednoho
+generického grafického příkazu v \textsf{R} tak, aby zrenderoval
+současně diakritiku i~matematickou notaci, a v ten okamžik přestane
+kód diagramu dále renderovat, aniž by vrátil chybovou hlášku -- výsledkem
+je tak "diagram" s chybějícími komponentami). Příkladem kombinace
+matematické notace a diakritiky v jednom popisku je
+obrázek~\ref{pravdepodobnost_souctu_x}.
 
 
 \end{document}
